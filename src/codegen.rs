@@ -7,10 +7,12 @@ pub trait Codegen {
 impl Codegen for OptTokens {
     fn codegen(self) -> String {
         let mut loop_counter = 0u32;
-        let mut code: String = String::from(r#"
+        let mut code: String = String::from(
+            r#"
 #include "bfstdlib.h"
 
-void bf_entry(vec_t *vec) {"#);
+void bf_entry(vec_t *vec) {"#,
+        );
 
         for token in self {
             code += "\n";
@@ -27,12 +29,12 @@ void bf_entry(vec_t *vec) {"#);
                 OptToken::ParLoopStart => {
                     loop_counter += 1;
                     format!("loop{loop_counter}:")
-                },
+                }
                 OptToken::ParLoopEnd => {
                     let str = format!("if (vector_get(vec) != 0) goto loop{loop_counter};");
                     loop_counter -= 1;
                     str
-                },
+                }
             };
             code += "\n";
         }

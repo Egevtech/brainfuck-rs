@@ -8,3 +8,4 @@ better-panic = "0.3.0"
 clap = { version = "4.6.6", features = ["derive"] }
 color-eyre = "0.6.5"
 human-panic = "2.0.8"
+rand = "0.10.2"
