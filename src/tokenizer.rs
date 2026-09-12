@@ -13,6 +13,8 @@ pub enum Token {
 
     LeftSquareBracket,
     RightSquareBracket,
+
+    Comma(String),
 }
 
 #[derive(Debug)]
@@ -36,9 +38,15 @@ pub type Tokens = Vec<Token>;
 pub fn tokenize(str: String) -> Result<Tokens, TokenizerError> {
     let mut tokens = vec![];
 
-    let ftokens = str.chars().into_iter().filter(|s| !s.is_whitespace());
+    let ftokens = str
+        .chars()
+        .into_iter()
+        .filter(|s| !s.is_whitespace())
+        .collect::<Vec<char>>();
 
-    for token in ftokens {
+    for mut i in 0..ftokens.len() {
+        let token = ftokens[i];
+
         tokens.push(match token {
             '+' => Token::Plus,
             '-' => Token::Minus,
@@ -51,6 +59,20 @@ pub fn tokenize(str: String) -> Result<Tokens, TokenizerError> {
 
             '[' => Token::LeftSquareBracket,
             ']' => Token::RightSquareBracket,
+
+            '#' => {
+                let mut c = String::new();
+
+                i += 1;
+
+                while ftokens[i].is_alphanumeric() && ftokens[i] != ';' {
+                    c.push(ftokens[i]);
+
+                    i += 1;
+                }
+
+                Token::Comma(c)
+            }
 
             _ => return Err(TokenizerError::UnexpectedToken(token)),
         });
