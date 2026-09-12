@@ -2,7 +2,7 @@ mod codegen;
 pub mod optimizations;
 mod tokenizer;
 
-use clap::Parser;
+use clap::{ArgAction, Parser};
 use codegen::*;
 use optimizations::*;
 use rand::RngExt;
@@ -25,6 +25,10 @@ struct Cmd {
     /// Copy generated code to current directory
     #[arg(short, long)]
     copy_compiled: bool,
+
+    /// Tokenize only
+    #[arg(short, action=ArgAction::Count)]
+    tokenize: u8,
 }
 
 fn main() -> color_eyre::Result<()> {
@@ -32,10 +36,27 @@ fn main() -> color_eyre::Result<()> {
 
     let args = Cmd::parse();
 
-    let code = tokenize(std::fs::read_to_string(args.input).expect("Failed to read source file"))
-        .expect("Tokenize failed")
-        .optimize()
-        .codegen();
+    let code: String;
+
+    {
+        let tokens =
+            tokenize(std::fs::read_to_string(args.input).expect("Failed to read source file"))
+                .expect("Tokenize failed");
+
+        if args.tokenize == 1 {
+            println!("{:?}", tokens);
+            return Ok(());
+        }
+
+        let opt_tokens = tokens.optimize();
+
+        if args.tokenize >= 2 {
+            println!("{:?}", opt_tokens);
+            return Ok(());
+        }
+
+        code = opt_tokens.codegen();
+    }
 
     let (path, session_id) = create_build_area().expect("Failed to create build area");
 
