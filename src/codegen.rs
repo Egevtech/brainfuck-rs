@@ -28,13 +28,14 @@ void bf_entry(vec_t *vec) {"#,
 
                 OptToken::ParLoopStart => {
                     loop_counter += 1;
-                    format!("loop{loop_counter}:")
+                    format!("\tloop{loop_counter}:")
                 }
                 OptToken::ParLoopEnd => {
-                    let str = format!("if (vector_get(vec) != 0) goto loop{loop_counter};");
+                    let str = format!("\tif (vector_get(vec) != 0) goto loop{loop_counter};");
                     loop_counter -= 1;
                     str
                 }
+                OptToken::ParComma(_) => "".to_string(),
             };
             code += "\n";
         }
