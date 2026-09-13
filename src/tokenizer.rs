@@ -44,10 +44,9 @@ pub fn tokenize(str: String) -> Result<Tokens, TokenizerError> {
         .filter(|s| !s.is_whitespace())
         .collect::<Vec<char>>();
 
-    for mut i in 0..ftokens.len() {
-        let token = ftokens[i];
-
-        tokens.push(match token {
+    let mut i = 0;
+    while i < ftokens.len() {
+        tokens.push(match ftokens[i] {
             '+' => Token::Plus,
             '-' => Token::Minus,
 
@@ -65,17 +64,18 @@ pub fn tokenize(str: String) -> Result<Tokens, TokenizerError> {
 
                 i += 1;
 
-                while ftokens[i].is_alphanumeric() && ftokens[i] != ';' {
+                while ftokens[i] != ';' {
                     c.push(ftokens[i]);
 
                     i += 1;
                 }
-
                 Token::Comma(c)
             }
 
-            _ => return Err(TokenizerError::UnexpectedToken(token)),
+            _ => return Err(TokenizerError::UnexpectedToken(ftokens[i])),
         });
+
+        i += 1;
     }
 
     Ok(tokens)
