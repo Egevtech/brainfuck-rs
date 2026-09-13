@@ -13,6 +13,8 @@ pub enum OptToken {
 
     ParLoopStart,
     ParLoopEnd,
+
+    ParComma(String),
 }
 
 pub type OptTokens = Vec<OptToken>;
@@ -65,6 +67,8 @@ impl Optimizations for Tokens {
                     proc_opt_token!(Token::RightAngleBracket, i, repeats, self);
                     OptToken::ParMoveFor(repeats)
                 }
+
+                Token::Comma(s) => OptToken::ParComma(s.clone()),
             });
             i += 1;
         }
