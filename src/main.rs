@@ -1,5 +1,6 @@
 mod codegen;
-pub mod optimizations;
+mod optimizations;
+mod pragma;
 mod tokenizer;
 
 use clap::{ArgAction, Parser};
